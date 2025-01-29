@@ -70,3 +70,25 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* styles.css */
+@keyframes pulsex {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulsex {
+  display: inline-block;
+  animation: pulsex 2s infinite; /* Adjust duration and infinite loop */
+  border-radius: 50%; /* Optional: for circular effects */
+}

@@ -4,31 +4,42 @@ import { adminDb } from "../../firebase-admin";
 
 export const createDocument = async () => {
   // protect route
-    await auth.protect();
+  await auth.protect()
 
   const { sessionClaims } = await auth();
 
-  // create a user document
+  if (!sessionClaims) return;
+
   try {
-    await adminDb
-      .collection("users")
-      .doc(sessionClaims?.email as string)
-      .set({ fullName: sessionClaims?.fullName });
-
+    // create a user
+    // const userRef = await adminDb
+    //   .collection("users")
+    //   .doc(sessionClaims?.email as string);
     // create a document
-    const docRef = await adminDb.collection("documents").add({
-      title: "Untitled Document",
-    });
+    const docRef = await adminDb
+      .collection("documents")
+      .add({ title: "Untitled" });
+    // create a room
+    await adminDb
+      .collection("rooms")
+      .doc(docRef.id)
+      .collection("members")
+      .add({ userId: sessionClaims.email as string, role: "owner", docId: docRef.id });
 
-    // create room
-    await adminDb.collection("rooms").add({
-      documentId: docRef.id,
-      owner: sessionClaims?.email,
-      members: [{ user: sessionClaims?.email, role: "owner" }],
-    });
-
-    return {docId: docRef.id};
+    return { docId: docRef.id };
   } catch (error) {
-    console.error("Error creating user document", error);
+    console.error(error);
   }
 };
+
+export const addUserToRoom = async (email: string, docId: string, role: 'editor' | 'viewer' ) => {
+   await adminDb
+     .collection("rooms")
+     .doc(docId)
+     .collection("members")
+     .add({
+       userId: email,
+       role,
+       docId
+     });
+}
