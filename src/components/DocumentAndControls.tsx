@@ -4,24 +4,54 @@ import InviteButton from "./InviteButton";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { FormEvent, useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
-import { updateDoc, doc } from "firebase/firestore";
+import {
+  updateDoc,
+  doc,
+  query,
+  where,
+  collectionGroup,
+  getDocs,
+} from "firebase/firestore";
 import { useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
+import { verify } from "crypto";
 
 function DocumentAndControls() {
   const [title, setTiltle] = useState("");
   const { id } = useParams<{ id: string }>();
   const [isUpdating, startTransition] = useTransition();
   const [docValue] = useDocumentData(doc(db, "documents", id));
+  const [isOwner, setOwner] = useState(false);
+  const { user } = useUser();
   const { toast } = useToast();
 
   useEffect(() => {
     if (docValue?.title) setTiltle(docValue?.title);
-    console.log("How many times does useEffect run ", docValue);
-  }, [docValue]);
+
+    if (!user) return;
+
+    // check for ownership
+    const verifyOwnership = async () => {
+      const $query = query(
+        collectionGroup(db, "members"),
+        where("userId", "==", user.primaryEmailAddress?.emailAddress),
+        where("docId", "==", id)
+      );
+      const snapshot = await getDocs($query);
+      if (
+        snapshot.docs.some((doc) =>
+          doc.data() ? doc.data()?.role === "owner" : false
+        )
+      )
+        setOwner(true);
+    };
+
+    verifyOwnership()
+  }, [docValue, user, id]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -53,8 +83,14 @@ function DocumentAndControls() {
         </Button>
       </form>
 
-      <InviteButton />
-      <DeleteButton />
+      {isOwner ? (
+        <>
+          <InviteButton />
+          <DeleteButton />
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
