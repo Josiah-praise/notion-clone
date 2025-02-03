@@ -8,15 +8,18 @@ import { useTransition } from "react";
 import { useEffect } from "react";
 
 function MainContent({ params }: { params: Promise<{ id: string }> }) {
-  const { user, isSignedIn, isLoaded } = useUser();
-  const [hasAccess, setAccess] = useState(false);
+  const { user, isLoaded } = useUser();
+  const [state, setState] = useState({ access: false, isOwner: false });
   const [loading, startTransition] = useTransition();
 
   useEffect(
     () =>
-      startTransition(async () => {
+    {
+      if (!user) return;
+
+      return startTransition(async () => {
         const validateRequest = async () => {
-          if (isLoaded && isSignedIn && user && user.primaryEmailAddress) {
+          if (user && user.primaryEmailAddress) {
             const q = query(
               collectionGroup(db, "members"),
               where("userId", "==", user.primaryEmailAddress.emailAddress),
@@ -24,12 +27,14 @@ function MainContent({ params }: { params: Promise<{ id: string }> }) {
             );
             const snapshot = await getDocs(q);
             console.log((await params).id);
-            if (!snapshot.empty) setAccess(true);
+            if (!snapshot.empty) setState(state => ({ ...state, access: true }));
+            if (snapshot.docs.some((doc) => doc.data()?.role == "owner"))
+              setState(state => ({ ...state, isOwner: true }));
           }
         };
         await validateRequest();
-      }),
-    [isLoaded, isSignedIn, user, params]
+      })},
+    [user, params]
   );
 
   if (!isLoaded || loading)
@@ -41,10 +46,10 @@ function MainContent({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <>
-      {hasAccess ? (
+      {state.access ? (
         <SignedIn>
           <div className="max-w-screen-xl mx-auto">
-            <DocumentAndControls />
+            <DocumentAndControls isOwner={ state.isOwner} />
             {/* {chat with docs and translate utilities with darkmode if you want} */}
             {/* {main text editor} */}
           </div>

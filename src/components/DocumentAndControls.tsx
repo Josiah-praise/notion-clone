@@ -9,54 +9,26 @@ import { db } from "../../firebase";
 import {
   updateDoc,
   doc,
-  query,
-  where,
-  collectionGroup,
-  getDocs,
 } from "firebase/firestore";
 import { useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
-import { verify } from "crypto";
 
-function DocumentAndControls() {
+function DocumentAndControls({ isOwner }: { isOwner: boolean }) {
   const [title, setTiltle] = useState("");
   const { id } = useParams<{ id: string }>();
   const [isUpdating, startTransition] = useTransition();
   const [docValue] = useDocumentData(doc(db, "documents", id));
-  const [isOwner, setOwner] = useState(false);
-  const { user } = useUser();
   const { toast } = useToast();
 
   useEffect(() => {
     if (docValue?.title) setTiltle(docValue?.title);
-
-    if (!user) return;
-
-    // check for ownership
-    const verifyOwnership = async () => {
-      const $query = query(
-        collectionGroup(db, "members"),
-        where("userId", "==", user.primaryEmailAddress?.emailAddress),
-        where("docId", "==", id)
-      );
-      const snapshot = await getDocs($query);
-      if (
-        snapshot.docs.some((doc) =>
-          doc.data() ? doc.data()?.role === "owner" : false
-        )
-      )
-        setOwner(true);
-    };
-
-    verifyOwnership()
-  }, [docValue, user, id]);
+  }, [docValue]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (title.trim())
+    if (title.trim() && title !== docValue?.title)
       startTransition(async () => {
         await updateDoc(doc(db, "documents", id), { title: title.trim() });
         toast({
