@@ -4,7 +4,7 @@ import { adminDb } from "../../firebase-admin";
 
 export const createDocument = async () => {
   // protect route
-  await auth.protect()
+  await auth.protect();
 
   const { sessionClaims } = await auth();
 
@@ -24,7 +24,11 @@ export const createDocument = async () => {
       .collection("rooms")
       .doc(docRef.id)
       .collection("members")
-      .add({ userId: sessionClaims.email as string, role: "owner", docId: docRef.id });
+      .add({
+        userId: sessionClaims.email as string,
+        role: "owner",
+        docId: docRef.id,
+      });
 
     return { docId: docRef.id };
   } catch (error) {
@@ -32,14 +36,19 @@ export const createDocument = async () => {
   }
 };
 
-export const addUserToRoom = async (email: string, docId: string, role: 'editor' | 'viewer' ) => {
-   await adminDb
-     .collection("rooms")
-     .doc(docId)
-     .collection("members")
-     .add({
-       userId: email,
-       role,
-       docId
-     });
-}
+export const addUserToRoom = async (
+  email: string,
+  docId: string,
+  role: "editor" | "viewer"
+) => {
+  try {
+    await adminDb.collection("rooms").doc(docId).collection("members").add({
+      userId: email,
+      role,
+      docId,
+    });
+  } catch (err) {
+    console.error(err);
+    return { error: "Something went wrong" };
+  }
+};

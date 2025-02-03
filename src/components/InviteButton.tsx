@@ -23,18 +23,24 @@ function InviteButton() {
   const { id } = useParams<{ id: string }>();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-  const [isOpen, setOpen ] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   const handleSubmission = (e: FormEvent) => {
     e.preventDefault();
     startTransition(async () => {
-      if (user?.primaryEmailAddress?.emailAddress != input)
-        await addUserToRoom(input, id, "editor");
+      let result;
+      if (user?.primaryEmailAddress?.emailAddress != input) {
+        result = await addUserToRoom(input, id, "editor");
+    }
 
-      setInput("");
-      setOpen(false);
-      toast({
-        description: "Invitation sucessful",
+      if (!result) {
+        setInput("");
+        setOpen(false);
+        toast({
+          description: "Invitation sucessful",
+        });
+      } else toast({
+        description: "Something went wrong 🥲😭",
       });
     });
   };

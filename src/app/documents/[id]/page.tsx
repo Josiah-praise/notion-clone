@@ -1,43 +1,16 @@
 "use client";
 import DocumentAndControls from "@/components/DocumentAndControls";
-import { RedirectToSignIn, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
-import { db } from "../../../../firebase";
-import { collectionGroup, query, where, getDocs } from "firebase/firestore";
-import { useState } from "react";
-import { useTransition } from "react";
-import { useEffect } from "react";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useContext } from "react";
+import { AuthContext } from "@/components/AuthProvider";
 
-function MainContent({ params }: { params: Promise<{ id: string }> }) {
-  const { user, isLoaded } = useUser();
-  const [state, setState] = useState({ access: false, isOwner: false });
-  const [loading, startTransition] = useTransition();
+function MainContent() {
+  const authState: {
+    state: { role: string; hasAccess: boolean };
+    isLoading: boolean;
+  } = useContext(AuthContext);
 
-  useEffect(
-    () =>
-    {
-      if (!user) return;
-
-      return startTransition(async () => {
-        const validateRequest = async () => {
-          if (user && user.primaryEmailAddress) {
-            const q = query(
-              collectionGroup(db, "members"),
-              where("userId", "==", user.primaryEmailAddress.emailAddress),
-              where("docId", "==", (await params).id)
-            );
-            const snapshot = await getDocs(q);
-            console.log((await params).id);
-            if (!snapshot.empty) setState(state => ({ ...state, access: true }));
-            if (snapshot.docs.some((doc) => doc.data()?.role == "owner"))
-              setState(state => ({ ...state, isOwner: true }));
-          }
-        };
-        await validateRequest();
-      })},
-    [user, params]
-  );
-
-  if (!isLoaded || loading)
+  if (authState.isLoading)
     return (
       <div className="text-center w-full h-full flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -46,10 +19,14 @@ function MainContent({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <>
-      {state.access ? (
+      {authState.state.hasAccess ? (
         <SignedIn>
           <div className="max-w-screen-xl mx-auto">
-            <DocumentAndControls isOwner={ state.isOwner} />
+            {authState.state.role != "viewer" ? (
+              <DocumentAndControls isOwner={authState.state.role == "owner"} />
+            ) : (
+              ""
+            )}
             {/* {chat with docs and translate utilities with darkmode if you want} */}
             {/* {main text editor} */}
           </div>
