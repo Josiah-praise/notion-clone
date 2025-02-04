@@ -6,16 +6,14 @@ import { AuthContext } from "@/components/AuthProvider";
 
 function MainContent() {
   const authState: {
-    state: { role: string; hasAccess: boolean };
-    isLoading: boolean;
+    state: { role: string; hasAccess: boolean, loaded: boolean };
   } = useContext(AuthContext);
 
-  if (authState.isLoading)
-    return (
-      <div className="text-center w-full h-full flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
+  if (!authState.state.loaded) return (
+    <div className="text-center w-full h-full flex items-center justify-center">
+      <span className="loading loading-spinner loading-lg"></span>
+    </div>
+  );
 
   return (
     <>

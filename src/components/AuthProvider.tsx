@@ -9,9 +9,8 @@ import { db } from "../../firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 export const AuthContext = createContext<{
-  state: { role: string; hasAccess: boolean };
-  isLoading: boolean;
-}>({ state: { role: "", hasAccess: false }, isLoading: false });
+  state: { role: string; hasAccess: boolean, loaded: boolean };
+}>({ state: { role: "", hasAccess: false, loaded: false }});
 
 export default function AuthProvider({
   children,
@@ -20,8 +19,11 @@ export default function AuthProvider({
 }) {
   const { user } = useUser();
   const { id } = useParams<{ id: string }>();
-  const [state, setState] = useState({ role: "", hasAccess: false });
-  const [isLoading, startTransition] = useTransition();
+  const [state, setState] = useState({
+    role: "",
+    hasAccess: false,
+    loaded: false,
+  });
   const q = query(
     collectionGroup(db, "members"),
     where("userId", "==", user?.primaryEmailAddress?.emailAddress || ""),
@@ -31,19 +33,17 @@ export default function AuthProvider({
   const [snapshot] = useCollectionData(q);
 
   useEffect(() => {
-    startTransition(() => {
-      if (!snapshot) return;
-      if (snapshot.find((doc) => doc.role == "owner"))
-        setState({ role: "owner", hasAccess: true });
-      if (snapshot.find((doc) => doc.role == "editor"))
-        setState({ role: "editor", hasAccess: true });
-      if (snapshot.find((doc) => doc.role == "viewer"))
-        setState({ role: "viewer", hasAccess: true });
-    });
+    if (!snapshot) return;
+    if (snapshot.find((doc) => doc.role == "owner"))
+      setState({ loaded: true, role: "owner", hasAccess: true });
+    if (snapshot.find((doc) => doc.role == "editor"))
+      setState({ loaded: true, role: "editor", hasAccess: true });
+    if (snapshot.find((doc) => doc.role == "viewer"))
+      setState({ loaded: true, role: "viewer", hasAccess: true });
   }, [snapshot]);
 
   return (
-    <AuthContext.Provider value={{ state, isLoading }}>
+    <AuthContext.Provider value={{ state }}>
       {children}
     </AuthContext.Provider>
   );

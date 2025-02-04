@@ -11,11 +11,6 @@ export const createDocument = async () => {
   if (!sessionClaims) return;
 
   try {
-    // create a user
-    // const userRef = await adminDb
-    //   .collection("users")
-    //   .doc(sessionClaims?.email as string);
-    // create a document
     const docRef = await adminDb
       .collection("documents")
       .add({ title: "Untitled" });

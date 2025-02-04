@@ -4,7 +4,12 @@ import { LiveblocksProvider } from "@liveblocks/react";
 
 function LivesBlockProvider({ children }: { children: React.ReactNode }) {
   return (
-    <LiveblocksProvider authEndpoint="/api/auth">{children}</LiveblocksProvider>
+    <LiveblocksProvider
+      authEndpoint='/api/auth'
+    //   publicApiKey={process.env.NEXT_PUBLIC_LIVESBLOCKs_PUBLIC_KEY || ''}
+    >
+      {children}
+    </LiveblocksProvider>
   );
 }
 export default LivesBlockProvider;
