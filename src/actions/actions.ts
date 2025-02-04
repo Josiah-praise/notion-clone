@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { adminDb } from "../../firebase-admin";
+import { liveblocks } from "../../liveblocks.client";
 
 export const createDocument = async () => {
   // protect route
@@ -47,3 +48,11 @@ export const addUserToRoom = async (
     return { error: "Something went wrong" };
   }
 };
+
+export async function deleteRoom(roomId: string) {
+  try {
+  await liveblocks.deleteRoom(roomId);
+  } catch (error) {
+    console.error(error, '\n Error while deleting the room', roomId);
+  }
+}

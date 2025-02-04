@@ -24,6 +24,7 @@ import {
 import { db } from "../../firebase";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { deleteRoom } from "@/actions/actions";
 
 async function batchDeleteMembers(id: string) {
   const q = query(collectionGroup(db, "members"), where("docId", "==", id));
@@ -53,6 +54,7 @@ function DeleteButton() {
       await deleteDoc(doc(db, "documents", id));
       await batchDeleteMembers(id);
       await deleteDoc(doc(db, "rooms", id));
+      await deleteRoom(id);
       router.push("/");
       toast({ description: "Deleted sucessfully" });
     } catch (error) {

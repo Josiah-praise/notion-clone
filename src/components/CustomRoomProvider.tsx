@@ -13,12 +13,11 @@ function CustomRoomProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     startTransition(async () => {
       const setPermission = async () => {
-        const response = await fetch("/api/createRoom", {
+        await fetch("/api/createRoom", {
           method: "post",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ roomId: id }),
         });
-        console.log(response);
       };
         await setPermission();
         setLoader(true)

@@ -13,7 +13,7 @@ function SingleDocument({
   id: string;
   handleClick: () => void;
 }) {
-  const params = useParams();
+  const params = useParams<{id: string}>();
   const [value, loading] = useDocument(doc(collection(db, "documents"), id));
 
   if (loading) {

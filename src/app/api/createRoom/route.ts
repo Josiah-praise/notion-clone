@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { adminDb } from "../../../../firebase-admin";
 import { liveblocks } from "../../../../liveblocks.client";
 import { auth } from "@clerk/nextjs/server";
