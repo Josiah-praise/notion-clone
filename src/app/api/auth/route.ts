@@ -23,10 +23,9 @@ function stringToColor(str: string) {
   return color;
 }
 
-export async function POST({ params }: { params: Promise<{ slug: string }> }) {
+export async function POST() {
   const { sessionClaims } = await auth.protect();
-  console.log(await params);
-  const { status, body } = await liveblocks.identifyUser(
+  const session = liveblocks.prepareSession(
     sessionClaims.email as string,
     {
       userInfo: {
@@ -37,6 +36,10 @@ export async function POST({ params }: { params: Promise<{ slug: string }> }) {
       },
     } // Optional
   );
+
+   session.allow(`*`, session.FULL_ACCESS);
+
+  const { body, status } = await session.authorize();
 
   return new Response(body, { status });
 }

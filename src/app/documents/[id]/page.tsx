@@ -4,6 +4,7 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useContext } from "react";
 import { AuthContext } from "@/components/AuthProvider";
 import { Editor } from "@/components/Editor";
+import NotFoundPage from "@/components/NotFound";
 
 function MainContent() {
   const authState: {
@@ -15,7 +16,7 @@ function MainContent() {
       <span className="loading loading-spinner loading-lg"></span>
     </div>
   );
-
+  console.log(authState)
   return (
     <>
       {authState.state.hasAccess ? (
@@ -27,12 +28,12 @@ function MainContent() {
               ""
             )}
             {/* {chat with docs and translate utilities with darkmode if you want} */}
-            <div><Editor/></div>
+            <div className="mt-4"><Editor/></div>
           </div>
         </SignedIn>
       ) : (
         <div className="text-center w-full h-full flex items-center justify-center">
-          Page not found
+          <NotFoundPage/>
         </div>
       )}
       <SignedOut>

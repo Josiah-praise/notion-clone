@@ -52,9 +52,14 @@ function DeleteButton() {
   const deleteDocument = async () => {
     try {
       await deleteDoc(doc(db, "documents", id));
-      await batchDeleteMembers(id);
-      await deleteDoc(doc(db, "rooms", id));
-      await deleteRoom(id);
+      Promise.all([
+        batchDeleteMembers(id),
+        deleteDoc(doc(db, "rooms", id)),
+        deleteRoom(id),
+      ]);
+      // await batchDeleteMembers(id);
+      // await deleteDoc(doc(db, "rooms", id));
+      // await deleteRoom(id);
       router.push("/");
       toast({ description: "Deleted sucessfully" });
     } catch (error) {

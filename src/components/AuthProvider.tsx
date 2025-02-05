@@ -14,6 +14,9 @@ export const AuthContext = createContext<{
   state: { role: string; hasAccess: boolean; loaded: boolean };
 }>({ state: { role: "", hasAccess: false, loaded: false } });
 
+/**
+ * get user's role and access provides it to it's children
+ */
 export default function AuthProvider({
   children,
 }: {
@@ -36,7 +39,10 @@ export default function AuthProvider({
   const [snapshot] = useCollectionData(q);
 
   useEffect(() => {
-    if (!snapshot) return;
+    if (!snapshot || !snapshot.length) {
+      setState({ loaded: true, role: "", hasAccess: false });
+      return;
+    }
     if (snapshot.find((doc) => doc.role == "owner"))
       setState({ loaded: true, role: "owner", hasAccess: true });
     if (snapshot.find((doc) => doc.role == "editor"))
