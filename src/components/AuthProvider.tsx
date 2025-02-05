@@ -7,10 +7,12 @@ import { useUser } from "@clerk/nextjs";
 import { collectionGroup, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { useUpdateMyPresence, useOthers } from "@liveblocks/react/suspense";
+import Cursor from "./Cursor";
 
 export const AuthContext = createContext<{
-  state: { role: string; hasAccess: boolean, loaded: boolean };
-}>({ state: { role: "", hasAccess: false, loaded: false }});
+  state: { role: string; hasAccess: boolean; loaded: boolean };
+}>({ state: { role: "", hasAccess: false, loaded: false } });
 
 export default function AuthProvider({
   children,
@@ -29,7 +31,8 @@ export default function AuthProvider({
     where("userId", "==", user?.primaryEmailAddress?.emailAddress || ""),
     where("docId", "==", id)
   );
-
+  const updateMyPresence = useUpdateMyPresence();
+  const others = useOthers();
   const [snapshot] = useCollectionData(q);
 
   useEffect(() => {
@@ -44,7 +47,27 @@ export default function AuthProvider({
 
   return (
     <AuthContext.Provider value={{ state }}>
-      {children}
+      <div
+        className="h-[100%] bg-white p-2"
+        onPointerMove={(e) => {
+          console.log(e.clientX, e.clientY);
+          updateMyPresence({ cursor: { x: e.clientX, y: e.clientY } });
+        }}
+        onPointerLeave={() => updateMyPresence({ cursor: null })}
+      >
+        {others.map(({ connectionId, presence, info }) =>
+          presence.cursor ? (
+            <Cursor
+              key={connectionId}
+              color={info.color}
+              name={info.name}
+              x={presence.cursor.x}
+              y={presence.cursor.y}
+            />
+          ) : null
+        )}
+        {children}
+      </div>
     </AuthContext.Provider>
   );
 }

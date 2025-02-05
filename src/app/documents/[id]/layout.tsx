@@ -7,7 +7,7 @@ function DocumentLayout({ children }: { children: React.ReactNode }) {
   return (
     <CustomRoomProvider>
       <AuthProvider>
-        <div className="h-[100%] bg-white p-2">{children}</div>
+        {children}
       </AuthProvider>
     </CustomRoomProvider>
   );
