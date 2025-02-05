@@ -11,7 +11,7 @@ function MainContent() {
     state: { role: string; hasAccess: boolean, loaded: boolean };
   } = useContext(AuthContext);
 
-  if (!authState.state.loaded) return (
+  if (!authState.state.loaded || !authState.state.hasAccess) return (
     <div className="text-center w-full h-full flex items-center justify-center">
       <span className="loading loading-spinner loading-lg"></span>
     </div>

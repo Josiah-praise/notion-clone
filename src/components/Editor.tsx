@@ -40,7 +40,6 @@ export function Editor() {
 
 function BlockNote({ doc, provider }: EditorProps) {
   const me = useSelf();
-  const canEdit = me.canWrite;
   const editor: BlockNoteEditor = useCreateBlockNote({
     collaboration: {
       provider,
@@ -55,6 +54,5 @@ function BlockNote({ doc, provider }: EditorProps) {
       },
     },
   });
-  console.log(me.canWrite);
-  return <BlockNoteView editor={editor} editable={true} />;
+  return <BlockNoteView editor={editor} className="h-full"/>;
 }
