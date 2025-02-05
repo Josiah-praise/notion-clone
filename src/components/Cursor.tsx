@@ -15,6 +15,7 @@ export default function Cursor({ color, x, y, name }: Props) {
         left: 0,
         top: 0,
         transform: `translateX(${x}px) translateY(${y}px)`,
+        zIndex: 50,
       }}
     >
       <svg

@@ -3,6 +3,7 @@ import DocumentAndControls from "@/components/DocumentAndControls";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useContext } from "react";
 import { AuthContext } from "@/components/AuthProvider";
+import { Editor } from "@/components/Editor";
 
 function MainContent() {
   const authState: {
@@ -19,14 +20,14 @@ function MainContent() {
     <>
       {authState.state.hasAccess ? (
         <SignedIn>
-          <div className="max-w-screen-xl mx-auto">
+          <div className="md:max-w-screen-lg mx-auto max-w-[500px]">
             {authState.state.role != "viewer" ? (
               <DocumentAndControls isOwner={authState.state.role == "owner"} />
             ) : (
               ""
             )}
             {/* {chat with docs and translate utilities with darkmode if you want} */}
-            {/* {main text editor} */}
+            <div><Editor/></div>
           </div>
         </SignedIn>
       ) : (
