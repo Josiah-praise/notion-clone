@@ -5,18 +5,19 @@ import { useContext } from "react";
 import { AuthContext } from "@/components/AuthProvider";
 import { Editor } from "@/components/Editor";
 import NotFoundPage from "@/components/NotFound";
+import MembersControlBar from "@/components/MembersControlBar";
 
 function MainContent() {
   const authState: {
-    state: { role: string; hasAccess: boolean, loaded: boolean };
+    state: { role: string; hasAccess: boolean; loaded: boolean };
   } = useContext(AuthContext);
 
-  if (!authState.state.loaded || !authState.state.hasAccess) return (
-    <div className="text-center w-full h-full flex items-center justify-center">
-      <span className="loading loading-spinner loading-lg"></span>
-    </div>
-  );
-  console.log(authState)
+  if (!authState.state.loaded)
+    return (
+      <div className="text-center w-full h-full flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
   return (
     <>
       {authState.state.hasAccess ? (
@@ -27,13 +28,19 @@ function MainContent() {
             ) : (
               ""
             )}
+            <hr className="m-4" />
+            <MembersControlBar />
+            <hr className="m-4" />
+
             {/* {chat with docs and translate utilities with darkmode if you want} */}
-            <div className="mt-4"><Editor/></div>
+            <div className="mt-4">
+              <Editor />
+            </div>
           </div>
         </SignedIn>
       ) : (
         <div className="text-center w-full h-full flex items-center justify-center">
-          <NotFoundPage/>
+          <NotFoundPage />
         </div>
       )}
       <SignedOut>

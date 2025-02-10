@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useTransition } from "react";
+import React, { createContext, useState} from "react";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -50,6 +50,7 @@ export default function AuthProvider({
     if (snapshot.find((doc) => doc.role == "viewer"))
       setState({ loaded: true, role: "viewer", hasAccess: true });
   }, [snapshot]);
+
 
   return (
     <AuthContext.Provider value={{ state }}>

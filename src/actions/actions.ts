@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { adminDb } from "../../firebase-admin";
+import { BulkWriter } from "firebase-admin/firestore";
 import { liveblocks } from "../../liveblocks.client";
 
 export const createDocument = async () => {
@@ -51,8 +52,20 @@ export const addUserToRoom = async (
 
 export async function deleteRoom(roomId: string) {
   try {
-  await liveblocks.deleteRoom(roomId);
+    await liveblocks.deleteRoom(roomId);
   } catch (error) {
-    console.error(error, '\n Error while deleting the room', roomId);
+    console.error(error, "\n Error while deleting the room", roomId);
   }
+}
+
+export async function removeUserFromRoom(userId: string, docId: string) {
+  const snapshot = await adminDb
+    .collectionGroup("members")
+    .where("userId", "==", userId)
+    .where("docId", "==", docId)
+    .get();
+  
+  if (snapshot.empty) return {message: 'failure'}
+  await snapshot.docs.forEach(doc => doc.ref.delete())
+  return {message: 'success'}
 }

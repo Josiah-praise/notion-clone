@@ -1,9 +1,6 @@
 "use client";
-import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { RoomProvider } from "@liveblocks/react";
-import { useEffect } from "react";
-import { useTransition } from "react";
 import { ClientSideSuspense } from "@liveblocks/react";
 
 /**

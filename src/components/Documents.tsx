@@ -41,7 +41,7 @@ function Documents({ handleClick }: { handleClick: () => void }) {
       mine: filteredIds.mine,
       others: filteredIds.others,
     });
-  }, [snapshot]);
+  }, [snapshot, error]);
 
   if (loading) return <div className="text-center">Loading....</div>;
   if (error) return <div className="text-center">Something went wrong</div>;

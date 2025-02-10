@@ -1,0 +1,17 @@
+version: "3.0"
+services:
+  notion-web-app:
+    build: .
+    image: notion-image
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+      
