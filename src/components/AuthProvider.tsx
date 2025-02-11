@@ -32,11 +32,11 @@ export default function AuthProvider({
     where("userId", "==", user?.primaryEmailAddress?.emailAddress || ""),
     where("docId", "==", id)
   );
-  const [snapshot, loading] = useCollectionData(q);
+  const [snapshot] = useCollectionData(q);
 
   useEffect(() => {
-    if (!snapshot || loading) return;
-    if (!snapshot.length) {
+    if (!snapshot) return;
+    if (snapshot.length <= 0) {
       setState({ loaded: true, role: "", hasAccess: false });
       return;
     }

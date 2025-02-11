@@ -15,7 +15,7 @@ function MainContent() {
   } = useContext(AuthContext);
 
   console.log(authState.state.loaded, 'is whatever');
-  if (!authState.state.loaded)
+  if (!authState.state.loaded )
     return (
       <div className="text-center w-full h-full flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>

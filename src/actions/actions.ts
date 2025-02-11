@@ -38,15 +38,25 @@ export const addUserToRoom = async (
   docId: string,
   role: "editor" | "viewer"
 ) => {
+  if (!new RegExp(/^\w+@\w+\.\w+$/, 'g').test(email)) return {error: 'invalid email'}
   try {
-    await adminDb.collection("rooms").doc(docId).collection("members").add({
-      userId: email,
-      role,
-      docId,
-    });
+    const snapshot = await adminDb
+      .collectionGroup("members")
+      .where("userId", "==", email)
+      .where("docId", "==", docId)
+      .get();
+    if (snapshot.empty) {
+      await adminDb.collection("rooms").doc(docId).collection("members").add({
+        userId: email,
+        role,
+        docId,
+      });
+      return {message: 'access granted'}
+    }
+    else return {message: 'user already has access'}
   } catch (err) {
     console.error(err);
-    return { error: "Something went wrong" };
+    return { error: "something went wrong" };
   }
 };
 
@@ -64,8 +74,8 @@ export async function removeUserFromRoom(userId: string, docId: string) {
     .where("userId", "==", userId)
     .where("docId", "==", docId)
     .get();
-  
-  if (snapshot.empty) return {message: 'failure'}
-  await snapshot.docs.forEach(doc => doc.ref.delete())
-  return {message: 'success'}
+
+  if (snapshot.empty) return { message: "failure" };
+  await snapshot.docs.forEach((doc) => doc.ref.delete());
+  return { message: "success" };
 }

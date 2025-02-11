@@ -36,17 +36,16 @@ function InviteButton() {
       if (user?.primaryEmailAddress?.emailAddress != input) {
         setError('')
         result = await addUserToRoom(input, id, "editor");
+        if (result?.error) setError(result.error)
+        if (result?.message) toast({
+          description: result?.message,
+        });
     }
 
-      if (result) {
+      if (result?.message) {
         setInput("");
-        setOpen(false);
-        toast({
-          description: "Invitation sucessful",
-        });
-      } else toast({
-        description: "Something went wrong 🥲😭",
-      });
+        setOpen(false); 
+      }
     });
   };
 
@@ -64,7 +63,7 @@ function InviteButton() {
             <DialogDescription>
               This will give the user access to this document.
             </DialogDescription>
-            <b className="text-red-700 leading-3">{ error}</b>
+            <em className="text-red-700 leading-3">{ error}</em>
             <form
               action=""
               onSubmit={handleSubmission}
