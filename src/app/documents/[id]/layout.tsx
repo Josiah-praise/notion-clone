@@ -5,11 +5,9 @@ import AuthProvider from "@/components/AuthProvider";
 
 function DocumentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <CustomRoomProvider>
-      <AuthProvider>
-        {children}
-      </AuthProvider>
-    </CustomRoomProvider>
+    <AuthProvider>
+      <CustomRoomProvider>{children}</CustomRoomProvider>
+    </AuthProvider>
   );
 }
 export default DocumentLayout;

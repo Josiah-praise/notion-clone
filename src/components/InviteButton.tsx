@@ -24,16 +24,21 @@ function InviteButton() {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const [isOpen, setOpen] = useState(false);
+  const [error, setError] = useState('')
 
   const handleSubmission = (e: FormEvent) => {
     e.preventDefault();
     startTransition(async () => {
       let result;
+      if (user?.primaryEmailAddress?.emailAddress == input) {
+        setError('You already own this document')
+      }
       if (user?.primaryEmailAddress?.emailAddress != input) {
+        setError('')
         result = await addUserToRoom(input, id, "editor");
     }
 
-      if (!result) {
+      if (result) {
         setInput("");
         setOpen(false);
         toast({
@@ -59,6 +64,7 @@ function InviteButton() {
             <DialogDescription>
               This will give the user access to this document.
             </DialogDescription>
+            <b className="text-red-700 leading-3">{ error}</b>
             <form
               action=""
               onSubmit={handleSubmission}

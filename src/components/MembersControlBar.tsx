@@ -4,19 +4,20 @@ import { useParams } from "next/navigation";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
 import { collectionGroup, query, where } from "firebase/firestore";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Delete, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { removeUserFromRoom } from "@/actions/actions";
 import { useTransition } from "react";
+import { useToast } from "@/hooks/use-toast";
+import Avatars from '@/components/Avatarx'
 
 function MembersControlBar() {
   const { id } = useParams<{ id: string }>();
@@ -29,15 +30,11 @@ function MembersControlBar() {
   if (error) return <div>error</div>;
   if (!snapshot || !snapshot.length) return <div>Nada</div>;
 
-  const owner = snapshot.find(
-    (doc) => doc.role == 'owner'
-  );
-  const others = snapshot.filter(
-    (doc) => doc.role != 'owner'
-  );
+  const owner = snapshot.find((doc) => doc.role == "owner");
+  const others = snapshot.filter((doc) => doc.role != "owner");
 
   return (
-    <div>
+    <div className="flex justify-between my-2 border-1 border-slate-300 border-b py-2">
       <ul>
         <Dialog>
           <DialogTrigger className="border-1 border-slate-300 bg-slate-100 py-1 px-2 rounded-md shadow-sm">
@@ -62,8 +59,8 @@ function MembersControlBar() {
                     <li key={doc.userId} className="flex justify-between">
                       <span>{doc.userId}</span>
                       <span className="text-slate-600">
-                        {(owner?.userId ==
-                          user?.primaryEmailAddress?.emailAddress) && (
+                        {owner?.userId ==
+                          user?.primaryEmailAddress?.emailAddress && (
                           <RemoveUserButton userId={doc.userId} docId={id} />
                         )}
                       </span>
@@ -74,6 +71,8 @@ function MembersControlBar() {
           </DialogContent>
         </Dialog>
       </ul>
+
+      <Avatars/>
     </div>
   );
 }
@@ -87,10 +86,15 @@ function RemoveUserButton({
   docId: string;
 }) {
   const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
   const handleClick = () => {
     startTransition(async () => {
-      await removeUserFromRoom(userId, docId);
+      const result = await removeUserFromRoom(userId, docId);
+      
+      if (result.message == 'success') toast({ description: 'user removed successfully' })
+        else toast({ description: "something went wrong", variant: 'destructive' });
     });
+    
   };
   return (
     <Button disabled={isPending} variant={"destructive"} onClick={handleClick}>
