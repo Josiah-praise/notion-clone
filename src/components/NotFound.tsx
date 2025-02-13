@@ -7,7 +7,7 @@ export default function NotFoundPage() {
         <div className="number">404</div>
         <div className="subtitle">Page Not Found</div>
         <div className="description">
-          Oops! We can't seem to find the page you're looking for.
+          Oops! We can&apos;t seem to find the page you&apos;re looking for.
         </div>
       </div>
       {/* CSS-in-JS for animations */}
@@ -71,7 +71,7 @@ export default function NotFoundPage() {
   );
 }
 
-const containerStyle = {
+const containerStyle: React.CSSProperties = {
   backgroundColor: "#ffffff", // crisp white background
   minHeight: "100vh",
   display: "flex",
