@@ -1,18 +1,17 @@
 "use server";
 import { auth } from "@clerk/nextjs/server";
 import { adminDb } from "../../firebase-admin";
-import { BulkWriter } from "firebase-admin/firestore";
 import { liveblocks } from "../../liveblocks.client";
 
 export const createDocument = async () => {
-  // protect route
-  await auth.protect();
-
-  const { sessionClaims } = await auth();
-
-  if (!sessionClaims) return;
-
   try {
+    // protect route
+    await auth.protect();
+
+    const { sessionClaims } = await auth();
+
+    if (!sessionClaims) return;
+
     const docRef = await adminDb
       .collection("documents")
       .add({ title: "Untitled" });
@@ -38,7 +37,8 @@ export const addUserToRoom = async (
   docId: string,
   role: "editor" | "viewer"
 ) => {
-  if (!new RegExp(/^\w+@\w+\.\w+$/, 'g').test(email)) return {error: 'invalid email'}
+  if (!new RegExp(/^\w+@\w+\.\w+$/, "g").test(email))
+    return { error: "invalid email" };
   try {
     const snapshot = await adminDb
       .collectionGroup("members")
@@ -51,9 +51,8 @@ export const addUserToRoom = async (
         role,
         docId,
       });
-      return {message: 'access granted'}
-    }
-    else return {message: 'user already has access'}
+      return { message: "access granted" };
+    } else return { message: "user already has access" };
   } catch (err) {
     console.error(err);
     return { error: "something went wrong" };
