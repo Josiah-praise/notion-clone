@@ -1,6 +1,7 @@
 import { initializeApp, getApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import serviceKey from "./service-token.json" assert { type: "json" };
+
+const serviceKey = JSON.parse(process.env["SERVICE_TOKEN_JSON"] || '{}');
 
 
 const adminApp =
