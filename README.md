@@ -9,7 +9,6 @@ A **Next.js-powered** collaborative note-taking app that allows users to create 
 ✅ **Granular Edit Permissions** – Document owners can **grant or revoke** edit access at any time.  
 ✅ **Instant Updates Across Clients** – Any change to a document is reflected in real-time for all connected users—**no page reloads needed**.  
 ✅ **Secure Authentication** – Powered by **Clerk**, ensuring a smooth and secure login experience.  
-✅ **Optimized for Edge Functions** – Uses **Cloudflare Workers** for fast AI-driven chat and translation.  
 
 ---
 
@@ -20,7 +19,6 @@ A **Next.js-powered** collaborative note-taking app that allows users to create 
 | [Next.js](https://nextjs.org/)  | Core framework for the application  |  
 | [Clerk](https://clerk.com/)  | Authentication and user management  |  
 | [Firestore](https://firebase.google.com/docs/firestore)  | Realtime document storage  |  
-| [Cloudflare Workers](https://workers.cloudflare.com/)  | AI-driven text enhancements at the edge  |  
 | [Liveblocks](https://liveblocks.io/)  | Live cursors, presence, and collaborative editing  |  
 | [Hono](https://hono.dev/)  | Web framework for edge functions  |  
 
@@ -87,7 +85,9 @@ Then, open [http://localhost:3000](http://localhost:3000) in your browser.
 2. Share with collaborators – Grant edit access to other users.
 3. Real-time collaboration – Live cursors and text updates appear instantly for all connected users.
 4. Revoke access anytime – The document owner can remove edit permissions whenever needed.
-5. Chat with document
-6. Get translated document summary
+
 
 **🚀 Start collaborating today!**
+---
+### Author
+Josiah Praise
