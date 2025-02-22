@@ -15,6 +15,7 @@ export const AuthContext = createContext<{
 /**
  * get user's role and access provides it to it's children
  */
+
 export default function AuthProvider({
   children,
 }: {
