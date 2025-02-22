@@ -12,11 +12,12 @@ import Cursor from "@/components/Cursor";
 function MainContent() {
   const authState: {
     state: { role: string; hasAccess: boolean; loaded: boolean };
+    loading: boolean;
   } = useContext(AuthContext);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
  
-  if (!authState.state.loaded || isDeleting)
+  if (!authState.state.loaded || isDeleting || authState.loading)
     return (
       <div className="text-center w-full h-full flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
