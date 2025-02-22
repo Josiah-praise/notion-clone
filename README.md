@@ -1,6 +1,6 @@
 # 📜 Collaborative Note-Taking App  
 
-A **Next.js-powered** collaborative note-taking app that allows users to create and share documents in real-time. With **live cursors, concurrent editing, and permission management**, teams can collaborate seamlessly without page reloads. Built with **Liveblocks, YJS, Clerk, Firestore, and Cloudflare Workers**, this app ensures a smooth and dynamic editing experience.  
+A **Next.js-powered** collaborative note-taking app that allows users to create and share documents in real-time. With **live cursors, concurrent editing, and permission management**, teams can collaborate seamlessly without page reloads. Built with **Liveblocks, YJS, Clerk, and Firestore**, this app ensures a smooth and dynamic editing experience.  
 
 ## 🚀 Features  
 
