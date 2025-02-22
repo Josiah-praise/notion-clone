@@ -6,15 +6,18 @@ import { Input } from "./ui/input";
 import { FormEvent, useEffect, useState } from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { db } from "../../firebase";
-import {
-  updateDoc,
-  doc,
-} from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
 import { useTransition } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useParams } from "next/navigation";
 
-function DocumentAndControls({ isOwner }: { isOwner: boolean }) {
+function DocumentAndControls({
+  isOwner,
+  setIsDeleting,
+}: {
+  isOwner: boolean;
+  setIsDeleting: (bool: boolean) => void;
+}) {
   const [title, setTiltle] = useState("");
   const { id } = useParams<{ id: string }>();
   const [isUpdating, startTransition] = useTransition();
@@ -58,7 +61,7 @@ function DocumentAndControls({ isOwner }: { isOwner: boolean }) {
       {isOwner ? (
         <>
           <InviteButton />
-          <DeleteButton />
+          <DeleteButton setIsDeleting={setIsDeleting} />
         </>
       ) : (
         ""

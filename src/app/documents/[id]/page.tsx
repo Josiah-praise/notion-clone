@@ -1,7 +1,7 @@
 "use client";
 import DocumentAndControls from "@/components/DocumentAndControls";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "@/components/AuthProvider";
 import { Editor } from "@/components/Editor";
 import NotFoundPage from "@/components/NotFound";
@@ -13,9 +13,10 @@ function MainContent() {
   const authState: {
     state: { role: string; hasAccess: boolean; loaded: boolean };
   } = useContext(AuthContext);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
-  console.log(authState.state.loaded, 'is whatever');
-  if (!authState.state.loaded )
+ 
+  if (!authState.state.loaded || isDeleting)
     return (
       <div className="text-center w-full h-full flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -28,7 +29,10 @@ function MainContent() {
         <SignedIn>
           <div className="md:max-w-screen-lg mx-auto max-w-[500px]">
             {authState.state.role != "viewer" ? (
-              <DocumentAndControls isOwner={authState.state.role == "owner"} />
+              <DocumentAndControls
+                isOwner={authState.state.role == "owner"}
+                setIsDeleting={setIsDeleting}
+              />
             ) : (
               ""
             )}
