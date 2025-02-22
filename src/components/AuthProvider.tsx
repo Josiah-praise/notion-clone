@@ -8,9 +8,7 @@ import { collectionGroup, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-export const AuthContext = createContext<{
-  state: { role: string; hasAccess: boolean; loaded: boolean };
-}>({ state: { role: "", hasAccess: false, loaded: false } });
+export const AuthContext = createContext<any>(null);
 
 /**
  * get user's role and access provides it to it's children
@@ -33,7 +31,7 @@ export default function AuthProvider({
     where("userId", "==", user?.primaryEmailAddress?.emailAddress || ""),
     where("docId", "==", id)
   );
-  const [snapshot] = useCollectionData(q);
+  const [snapshot, loading] = useCollectionData(q);
 
   useEffect(() => {
     if (!snapshot) return;
@@ -49,7 +47,5 @@ export default function AuthProvider({
       setState({ loaded: true, role: "viewer", hasAccess: true });
   }, [snapshot]);
 
-  return (
-    <AuthContext.Provider value={{ state }}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ state, loading }}>{children}</AuthContext.Provider>;
 }
