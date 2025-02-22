@@ -11,7 +11,6 @@ function NewDocumentButton({ handleClick }: { handleClick: () => void }) {
   const { toast } = useToast();
 
   const handleNewDocumentCreation = () => {
-    console.log("New document button clicked");
 
     startTransition(async () => {
       const result = await createDocument();

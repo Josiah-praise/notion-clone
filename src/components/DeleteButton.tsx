@@ -37,7 +37,11 @@ async function batchDeleteMembers(id: string) {
   await batch.commit();
 }
 
-function DeleteButton() {
+function DeleteButton({
+  setIsDeleting,
+}: {
+  setIsDeleting: (bool: boolean) => void;
+}) {
   const [isOpen, setOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -45,6 +49,7 @@ function DeleteButton() {
   const [deleting, startDeletion] = useTransition();
 
   const toggleDialogue = () => {
+    setIsDeleting(true);
     startDeletion(deleteDocument);
     setOpen(!isOpen);
   };

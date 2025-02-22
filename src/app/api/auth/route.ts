@@ -24,7 +24,6 @@ function stringToColor(str: string) {
 }
 
 export async function POST() {
-  console.log('hit the auth')
   const { sessionClaims } = await auth.protect();
   const session = liveblocks.prepareSession(
     sessionClaims.email as string,

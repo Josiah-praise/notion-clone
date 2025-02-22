@@ -49,7 +49,6 @@ export default function AuthProvider({
       setState({ loaded: true, role: "viewer", hasAccess: true });
   }, [snapshot]);
 
-  console.log(state.loaded, "auth provider");
   return (
     <AuthContext.Provider value={{ state }}>{children}</AuthContext.Provider>
   );
